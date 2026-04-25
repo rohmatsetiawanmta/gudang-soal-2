@@ -1,1 +1,21 @@
 @import "tailwindcss";
+
+:root {
+  --bg-main: #f8fafc;
+  --sidebar-width: 260px;
+}
+
+body {
+  margin: 0;
+  font-family: "Inter", system-ui, sans-serif;
+  background-color: var(--bg-main);
+  @apply antialiased text-slate-900;
+}
+
+/* Scrollbar styling agar tetap clean */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-thumb {
+  @apply bg-slate-200 rounded-full;
+}

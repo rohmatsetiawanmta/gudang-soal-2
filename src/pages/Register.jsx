@@ -20,12 +20,14 @@ const Register = () => {
 
     try {
       const response = await axios.post(
-        "https://api.matrohmatmath.com/gudang-soal/login.php?action=register",
+        "https://gudangsoal.com/api/login.php?action=register",
         formData
       );
 
       if (response.data.status === "success") {
-        toast.success("Akun berhasil dibuat! Silakan login.");
+        toast.success(
+          "Registrasi berhasil! Silakan cek email untuk verifikasi."
+        );
         navigate("/login");
       }
     } catch (error) {
@@ -48,7 +50,7 @@ const Register = () => {
           </div>
           <h1 className="text-2xl font-bold text-slate-800">Daftar Akun</h1>
           <p className="text-slate-400 text-sm">
-            Mulai petualangan belajarmu di Gudang Soal
+            Mulai petualangan belajarmu sekarang
           </p>
         </div>
 
@@ -67,7 +69,6 @@ const Register = () => {
                 onChange={(e) =>
                   setFormData({ ...formData, name: e.target.value })
                 }
-                placeholder="Masukkan nama Anda"
                 className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-4 pl-12 pr-4 outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all"
                 required
               />
@@ -88,7 +89,6 @@ const Register = () => {
                 onChange={(e) =>
                   setFormData({ ...formData, email: e.target.value })
                 }
-                placeholder="nama@email.com"
                 className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-4 pl-12 pr-4 outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all"
                 required
               />
@@ -109,7 +109,6 @@ const Register = () => {
                 onChange={(e) =>
                   setFormData({ ...formData, password: e.target.value })
                 }
-                placeholder="••••••••"
                 className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-4 pl-12 pr-4 outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all"
                 required
               />
@@ -119,15 +118,14 @@ const Register = () => {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full bg-blue-600 text-white py-4 rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-blue-700 transition-all shadow-lg shadow-blue-100"
+            className="w-full bg-blue-600 text-white py-4 rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-blue-700 transition-all shadow-lg disabled:opacity-70"
           >
             {isLoading ? (
               <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
             ) : (
-              <>
-                Daftar Sekarang <ArrowRight size={20} />
-              </>
+              "Daftar Sekarang"
             )}
+            <ArrowRight size={20} />
           </button>
         </form>
 

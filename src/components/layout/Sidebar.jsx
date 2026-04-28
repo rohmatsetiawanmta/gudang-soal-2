@@ -33,7 +33,7 @@ const Sidebar = () => {
       icon: <BookOpen size={20} />,
       label: "Question Bank",
       path: "/bank-soal",
-      isComingSoon: true,
+      isComingSoon: false,
     },
     {
       icon: <FileText size={20} />,

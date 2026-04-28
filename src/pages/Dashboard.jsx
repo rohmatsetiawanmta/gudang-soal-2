@@ -17,7 +17,7 @@ import "katex/dist/katex.min.css";
 import { BlockMath } from "react-katex";
 
 const Dashboard = () => {
-  // Mengambil data user dari localStorage
+  // Mengambil data user dari localStorage agar sinkron dengan login
   const userData = JSON.parse(localStorage.getItem("userData")) || {
     name: "User",
   };
@@ -51,7 +51,7 @@ const Dashboard = () => {
 
   return (
     <div className="max-w-6xl mx-auto space-y-8 pb-10">
-      {/* Search & Greeting Section */}
+      {/* Section Greeting & Pencarian */}
       <section className="relative py-6">
         <div className="relative z-10 space-y-6">
           <div>
@@ -78,9 +78,9 @@ const Dashboard = () => {
       </section>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* LEFT COLUMN: Main Activities */}
+        {/* KOLOM KIRI: Aktivitas Utama */}
         <div className="lg:col-span-2 space-y-8">
-          {/* Resume Learning Card */}
+          {/* Card Lanjutkan Belajar */}
           <div className="bg-white border border-slate-100 rounded-[24px] p-6 shadow-sm flex items-center justify-between group hover:border-blue-200 transition-all cursor-pointer">
             <div className="flex items-center gap-5">
               <div className="w-14 h-14 bg-blue-600 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-blue-100">
@@ -106,7 +106,7 @@ const Dashboard = () => {
             <ChevronRight className="text-slate-300 group-hover:text-blue-600 transition-colors" />
           </div>
 
-          {/* Jalur Belajar Section */}
+          {/* Section Jalur Belajar */}
           <div className="space-y-4">
             <h3 className="text-lg font-bold text-slate-800 flex items-center gap-2">
               <Compass size={20} className="text-blue-600" /> Jalur Belajar
@@ -117,7 +117,7 @@ const Dashboard = () => {
                   key={i}
                   className={`p-5 rounded-3xl ${path.color} border border-transparent hover:border-white hover:shadow-md transition-all cursor-pointer group`}
                 >
-                  <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center mb-4 shadow-sm">
+                  <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center mb-4 shadow-sm text-blue-600">
                     {path.icon}
                   </div>
                   <h5 className="font-bold text-slate-800">{path.title}</h5>
@@ -131,9 +131,9 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* RIGHT COLUMN: Engagement & Stats */}
+        {/* KOLOM KANAN: Statistik & Informasi */}
         <div className="space-y-6">
-          {/* Stats Card */}
+          {/* Card Statistik Performa */}
           <div className="bg-slate-900 rounded-[32px] p-6 text-white relative overflow-hidden">
             <div className="relative z-10 space-y-6">
               <div className="flex items-center justify-between">
@@ -144,26 +144,22 @@ const Dashboard = () => {
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <p className="text-2xl font-bold italic tracking-tighter">
-                    12
-                  </p>
+                  <p className="text-2xl font-bold tracking-tighter">12</p>
                   <p className="text-[9px] text-slate-400 uppercase font-bold tracking-widest">
                     Hari Streak
                   </p>
                 </div>
                 <div>
-                  <p className="text-2xl font-bold italic tracking-tighter">
-                    85%
-                  </p>
+                  <p className="text-2xl font-bold tracking-tighter">85%</p>
                   <p className="text-[9px] text-slate-400 uppercase font-bold tracking-widest">
-                    Akurasi Rata-rata
+                    Akurasi
                   </p>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Activity Log */}
+          {/* Log Aktivitas Terbaru */}
           <div className="bg-white border border-slate-100 rounded-[24px] p-6 shadow-sm">
             <h3 className="font-bold text-slate-800 text-sm mb-4 flex items-center gap-2">
               <History size={16} className="text-slate-400" /> Aktivitas Terbaru
@@ -185,7 +181,7 @@ const Dashboard = () => {
             </div>
           </div>
 
-          {/* YouTube Promo - Minimalist Style */}
+          {/* Promo Video YouTube */}
           <div className="bg-white border-2 border-red-50 rounded-[24px] p-5">
             <div className="flex items-center gap-2 mb-3">
               <Star size={16} className="text-red-500 fill-red-500" />

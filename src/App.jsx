@@ -4,6 +4,7 @@ import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Bookmarks from "./pages/Bookmarks";
+import VerifyStatus from "./pages/VerifyStatus";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <Route path="/bank-soal" element={<div>Soon</div>} />
         <Route path="/ujian" element={<div>Soon</div>} />
         <Route path="/bookmarks" element={<Bookmarks />} />
+        <Route path="/verify" element={<VerifyStatus />} />
       </Route>
     </Routes>
   );

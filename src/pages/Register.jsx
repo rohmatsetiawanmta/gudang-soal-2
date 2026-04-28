@@ -21,7 +21,7 @@ const Register = () => {
     try {
       const response = await axios.post(
         "https://gudangsoal.com/api/login.php?action=register",
-        formData
+        { ...formData, origin: window.location.origin }
       );
 
       if (response.data.status === "success") {

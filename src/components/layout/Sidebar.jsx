@@ -5,22 +5,26 @@ import {
   BookOpen,
   FileText,
   Bookmark,
-  Sparkles,
   LogOut,
-  User,
-  LogIn, // Import ikon LogIn
+  LogIn,
 } from "lucide-react";
 import toast from "react-hot-toast";
 
 const Sidebar = () => {
   const navigate = useNavigate();
-  // Simulasi cek status login
+
+  // Mengambil data user dari localStorage
   const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+  const userData = JSON.parse(localStorage.getItem("userData")) || {
+    name: "User",
+    email: "user@example.com",
+  };
 
   const handleLogout = () => {
-    localStorage.removeItem("isLoggedIn"); // Hapus status login
+    localStorage.removeItem("isLoggedIn");
+    localStorage.removeItem("userData");
     toast.success("Berhasil keluar");
-    navigate("/"); // Arahkan ke homepage, bukan /login
+    navigate("/");
   };
 
   const menuItems = [
@@ -45,20 +49,34 @@ const Sidebar = () => {
     },
   ];
 
+  // Fungsi untuk mendapatkan inisial nama
+  const getInitials = (name) => {
+    return name
+      .split(" ")
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase()
+      .substring(0, 2);
+  };
+
   return (
     <aside className="w-[260px] border-r border-slate-200 bg-white fixed h-full flex flex-col justify-between py-6">
       <div>
         {/* Logo Section */}
         <div className="px-6 mb-10 flex items-center gap-3">
-          <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-blue-200">
-            <Sparkles size={24} fill="currentColor" />
+          <div className="w-10 h-10 flex items-center justify-center overflow-hidden">
+            <img
+              src="/logo.png"
+              alt="Gudang Soal Logo"
+              className="w-full h-full object-contain"
+            />
           </div>
           <div>
             <h1 className="text-lg font-bold text-slate-800 leading-tight">
               Gudang Soal
             </h1>
-            <p className="text-[10px] text-slate-400 font-medium uppercase tracking-wider">
-              Pro Learning
+            <p className="text-[10px] text-blue-600 font-bold uppercase tracking-wider">
+              by @matrohmatmath
             </p>
           </div>
         </div>
@@ -102,43 +120,22 @@ const Sidebar = () => {
         </nav>
       </div>
 
-      <div className="px-4 space-y-4">
-        {/* Progress Card cuma muncul kalau login */}
-        {isLoggedIn && (
-          <div className="bg-slate-50 rounded-2xl p-4 border border-slate-100">
-            <div className="flex justify-between items-center mb-2">
-              <span className="text-xs font-bold text-slate-800">Level 7</span>
-              <span className="text-[10px] bg-white px-2 py-0.5 rounded-full border border-slate-200 text-purple-600 font-bold">
-                Pro
-              </span>
-            </div>
-            <div className="w-full bg-slate-200 rounded-full h-1.5 mb-2 overflow-hidden">
-              <motion.div
-                initial={{ width: 0 }}
-                animate={{ width: "70%" }}
-                className="bg-purple-500 h-1.5 rounded-full"
-              />
-            </div>
-            <p className="text-[10px] text-slate-400 font-medium">
-              350 / 500 XP to Level 8
-            </p>
-          </div>
-        )}
+      <div className="px-4">
+        {/* Bagian XP telah dihapus sesuai permintaan */}
 
         <div className="pt-4 border-t border-slate-100">
           {isLoggedIn ? (
-            /* Akun Section kalau sudah login */
             <div className="space-y-1">
               <div className="flex items-center gap-3 px-4 py-2 mb-2">
-                <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold text-xs">
-                  RS
+                <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold text-xs shrink-0">
+                  {getInitials(userData.name)}
                 </div>
                 <div className="overflow-hidden">
                   <p className="text-sm font-bold text-slate-800 truncate">
-                    Rohmat Setiawan
+                    {userData.name}
                   </p>
                   <p className="text-[10px] text-slate-400 truncate">
-                    admin@gmail.com
+                    {userData.email}
                   </p>
                 </div>
               </div>
@@ -154,7 +151,6 @@ const Sidebar = () => {
               </button>
             </div>
           ) : (
-            /* Tombol Login kalau belum login */
             <button
               onClick={() => navigate("/login")}
               className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-blue-600 text-white shadow-lg shadow-blue-100 hover:bg-blue-700 transition-all group"

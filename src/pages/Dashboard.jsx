@@ -50,12 +50,12 @@ const Dashboard = () => {
   ];
 
   return (
-    <div className="max-w-6xl mx-auto space-y-8 pb-10">
+    <div className="max-w-6xl mx-auto space-y-6 md:space-y-8 pb-10">
       {/* Section Greeting & Pencarian */}
-      <section className="relative py-6">
-        <div className="relative z-10 space-y-6">
+      <section className="relative py-2 md:py-6">
+        <div className="relative z-10 space-y-4 md:space-y-6">
           <div>
-            <h2 className="text-3xl font-bold text-slate-800 tracking-tight">
+            <h2 className="text-2xl md:text-3xl font-bold text-slate-800 tracking-tight">
               Halo, {userData.name.split(" ")[0]}
             </h2>
             <p className="text-slate-500 mt-1 text-sm">
@@ -71,39 +71,40 @@ const Dashboard = () => {
             <input
               type="text"
               placeholder="Cari topik, rumus, atau kode soal..."
-              className="w-full pl-12 pr-4 py-3.5 bg-white border border-slate-200 rounded-2xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-sm"
+              className="w-full pl-11 pr-4 py-3 md:py-3.5 bg-white border border-slate-200 rounded-2xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-sm"
             />
           </div>
         </div>
       </section>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* KOLOM KIRI: Aktivitas Utama */}
-        <div className="lg:col-span-2 space-y-8">
+      {/* Grid Utama: Menjadi 1 kolom di mobile, 3 kolom di desktop */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
+        {/* KOLOM KIRI & TENGAH: Aktivitas Utama */}
+        <div className="lg:col-span-2 space-y-6 md:space-y-8">
           {/* Card Lanjutkan Belajar */}
-          <div className="bg-white border border-slate-100 rounded-[24px] p-6 shadow-sm flex items-center justify-between group hover:border-blue-200 transition-all cursor-pointer">
-            <div className="flex items-center gap-5">
-              <div className="w-14 h-14 bg-blue-600 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-blue-100">
-                <PlayCircle size={28} />
+          <div className="bg-white border border-slate-100 rounded-[24px] p-5 md:p-6 shadow-sm flex items-center justify-between group hover:border-blue-200 transition-all cursor-pointer">
+            <div className="flex items-center gap-4 md:gap-5">
+              <div className="w-12 h-12 md:w-14 md:h-14 bg-blue-600 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-blue-100 shrink-0">
+                <PlayCircle size={24} md:size={28} />
               </div>
-              <div>
-                <span className="text-[10px] font-bold text-blue-600 uppercase tracking-widest">
+              <div className="min-w-0">
+                <span className="text-[9px] md:text-[10px] font-bold text-blue-600 uppercase tracking-widest block">
                   Lanjutkan Terakhir
                 </span>
-                <h4 className="text-lg font-bold text-slate-800">
+                <h4 className="text-base md:text-lg font-bold text-slate-800 truncate">
                   Persiapan OSN: Aljabar Linear
                 </h4>
                 <div className="flex items-center gap-2 mt-1">
-                  <div className="w-32 bg-slate-100 h-1.5 rounded-full overflow-hidden">
+                  <div className="w-24 md:w-32 bg-slate-100 h-1.5 rounded-full overflow-hidden">
                     <div className="bg-blue-600 h-full w-3/5 rounded-full" />
                   </div>
-                  <span className="text-[10px] text-slate-400 font-medium">
-                    60% selesai
+                  <span className="text-[9px] md:text-[10px] text-slate-400 font-medium">
+                    60%
                   </span>
                 </div>
               </div>
             </div>
-            <ChevronRight className="text-slate-300 group-hover:text-blue-600 transition-colors" />
+            <ChevronRight className="text-slate-300 group-hover:text-blue-600 transition-colors shrink-0" />
           </div>
 
           {/* Section Jalur Belajar */}
@@ -111,10 +112,12 @@ const Dashboard = () => {
             <h3 className="text-lg font-bold text-slate-800 flex items-center gap-2">
               <Compass size={20} className="text-blue-600" /> Jalur Belajar
             </h3>
+            {/* Grid Jalur Belajar: 1 kolom mobile, 2 kolom tablet/desktop */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {learningPaths.map((path, i) => (
-                <div
+                <motion.div
                   key={i}
+                  whileHover={{ y: -4 }}
                   className={`p-5 rounded-3xl ${path.color} border border-transparent hover:border-white hover:shadow-md transition-all cursor-pointer group`}
                 >
                   <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center mb-4 shadow-sm text-blue-600">
@@ -125,13 +128,13 @@ const Dashboard = () => {
                   <button className="text-[10px] font-bold text-slate-400 group-hover:text-blue-600 transition-colors uppercase tracking-wider flex items-center gap-1">
                     Buka Modul <ChevronRight size={12} />
                   </button>
-                </div>
+                </motion.div>
               ))}
             </div>
           </div>
         </div>
 
-        {/* KOLOM KANAN: Statistik & Informasi */}
+        {/* KOLOM KANAN: Statistik & Informasi (Akan pindah ke bawah di mobile) */}
         <div className="space-y-6">
           {/* Card Statistik Performa */}
           <div className="bg-slate-900 rounded-[32px] p-6 text-white relative overflow-hidden">
@@ -167,7 +170,7 @@ const Dashboard = () => {
             <div className="space-y-4">
               {[1, 2].map((_, i) => (
                 <div key={i} className="flex items-start gap-3">
-                  <div className="w-1.5 h-1.5 rounded-full bg-blue-500 mt-1.5" />
+                  <div className="w-1.5 h-1.5 rounded-full bg-blue-500 mt-1.5 shrink-0" />
                   <div className="flex-1">
                     <p className="text-[11px] text-slate-600 leading-relaxed">
                       Menyelesaikan 15 soal pada modul <b>Kalkulus Dasar</b>
@@ -192,9 +195,14 @@ const Dashboard = () => {
             <h4 className="font-bold text-slate-800 text-sm leading-snug mb-3">
               Trik Cepat Soal Kecukupan Data UTBK 2026
             </h4>
-            <button className="w-full py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-xl text-[11px] font-bold transition-all flex items-center justify-center gap-2">
+            <a
+              href="https://youtube.com"
+              target="_blank"
+              rel="noreferrer"
+              className="w-full py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-xl text-[11px] font-bold transition-all flex items-center justify-center gap-2"
+            >
               Tonton di YouTube
-            </button>
+            </a>
           </div>
         </div>
       </div>

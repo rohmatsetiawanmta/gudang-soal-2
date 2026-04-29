@@ -31,14 +31,17 @@ const HierarchyManagement = () => {
   const fetchCategories = async (parentId = null) => {
     setLoading(true);
     try {
-      const url = `https://gudangsoal.com/api/categories.php?action=get_categories${
-        parentId ? `&parent_id=${parentId}` : ""
-      }`;
+      let url = `https://gudangsoal.com/api/categories.php?action=get_categories&role=admin`;
+
+      if (parentId) {
+        url += `&parent_id=${parentId}`;
+      }
       const response = await fetch(url);
       const result = await response.json();
       if (result.status === "success") setCategories(result.data);
     } catch (error) {
       toast.error("Gagal ambil data");
+      toast.error("Gagal mengambil data hierarki");
     } finally {
       setLoading(false);
     }

@@ -14,7 +14,7 @@ function App() {
         <Route path="/" element={<Dashboard />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/bank-soal" element={<BankSoal />} />
+        <Route path="/bank-soal/*" element={<BankSoal />} />
         <Route path="/ujian" element={<div>Soon</div>} />
         <Route path="/bookmarks" element={<Bookmarks />} />
         <Route path="/verify" element={<VerifyStatus />} />

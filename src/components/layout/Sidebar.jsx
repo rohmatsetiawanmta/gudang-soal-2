@@ -8,6 +8,8 @@ import {
   LogOut,
   LogIn,
   X,
+  ShieldCheck,
+  GitBranchPlus,
 } from "lucide-react";
 import toast from "react-hot-toast";
 
@@ -17,6 +19,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
   const userData = JSON.parse(localStorage.getItem("userData")) || {
     name: "User",
     email: "user@example.com",
+    role: "user", // Default role
   };
 
   const handleLogout = () => {
@@ -43,8 +46,8 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
       ${isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
     `}
     >
-      <div>
-        {/* Logo & Close Button (Mobile) */}
+      <div className="overflow-y-auto no-scrollbar">
+        {/* Logo & Close Button */}
         <div className="px-6 mb-10 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <img
@@ -69,62 +72,105 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
           </button>
         </div>
 
-        {/* Navigation */}
-        <nav className="px-3 space-y-1">
-          {[
-            {
-              icon: <LayoutDashboard size={20} />,
-              label: "Dashboard",
-              path: "/",
-            },
-            {
-              icon: <BookOpen size={20} />,
-              label: "Question Bank",
-              path: "/bank-soal",
-            },
-            {
-              icon: <FileText size={20} />,
-              label: "Mock Exams",
-              path: "/ujian",
-              soon: true,
-            },
-            {
-              icon: <Bookmark size={20} />,
-              label: "My Bookmarks",
-              path: "/bookmarks",
-              soon: true,
-            },
-          ].map((item) => (
-            <NavLink
-              key={item.path}
-              to={item.soon ? "#" : item.path}
-              onClick={() => !item.soon && setIsOpen(false)}
-              className={({ isActive }) => `
-                flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-200 group
-                ${
-                  isActive && !item.soon
-                    ? "bg-blue-600 text-white shadow-md shadow-blue-100"
-                    : "text-slate-500 hover:bg-slate-50"
-                }
-                ${item.soon ? "opacity-50 cursor-not-allowed" : ""}
-              `}
-            >
-              <div className="flex items-center gap-3">
-                {item.icon}
-                <span className="font-medium text-sm">{item.label}</span>
-              </div>
-              {item.soon && (
-                <span className="text-[8px] bg-slate-100 text-slate-500 px-1.5 py-0.5 rounded-md font-bold uppercase border">
-                  Soon
-                </span>
-              )}
-            </NavLink>
-          ))}
-        </nav>
+        {/* User Navigation */}
+        <div className="px-6 mb-4">
+          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-4">
+            Main Menu
+          </p>
+          <nav className="space-y-1">
+            {[
+              {
+                icon: <LayoutDashboard size={18} />,
+                label: "Dashboard",
+                path: "/",
+              },
+              {
+                icon: <BookOpen size={18} />,
+                label: "Question Bank",
+                path: "/bank-soal",
+              },
+              {
+                icon: <FileText size={18} />,
+                label: "Mock Exams",
+                path: "/ujian",
+                soon: true,
+              },
+              {
+                icon: <Bookmark size={18} />,
+                label: "My Bookmarks",
+                path: "/bookmarks",
+                soon: true,
+              },
+            ].map((item) => (
+              <NavLink
+                key={item.path}
+                to={item.soon ? "#" : item.path}
+                onClick={() => !item.soon && setIsOpen(false)}
+                className={({ isActive }) => `
+                  flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-200 group
+                  ${
+                    isActive && !item.soon
+                      ? "bg-blue-600 text-white shadow-md shadow-blue-100"
+                      : "text-slate-500 hover:bg-slate-50"
+                  }
+                  ${item.soon ? "opacity-50 cursor-not-allowed" : ""}
+                `}
+              >
+                <div className="flex items-center gap-3">
+                  {item.icon}
+                  <span className="font-medium text-sm">{item.label}</span>
+                </div>
+                {item.soon && (
+                  <span className="text-[8px] bg-slate-100 text-slate-500 px-1.5 py-0.5 rounded-md font-bold uppercase border">
+                    Soon
+                  </span>
+                )}
+              </NavLink>
+            ))}
+          </nav>
+        </div>
+
+        {/* Admin Navigation - Hanya muncul jika role === 'admin' */}
+        {userData.role === "admin" && (
+          <div className="px-6 mt-8">
+            <div className="flex items-center gap-2 mb-4">
+              <ShieldCheck size={14} className="text-red-500" />
+              <p className="text-[10px] font-bold text-red-500 uppercase tracking-[0.2em]">
+                Admin Panel
+              </p>
+            </div>
+            <nav className="space-y-1">
+              {[
+                {
+                  icon: <GitBranchPlus size={18} />,
+                  label: "Hierarchy Management",
+                  path: "/admin/hierarchy",
+                },
+              ].map((item) => (
+                <NavLink
+                  key={item.path}
+                  to={item.path}
+                  onClick={() => setIsOpen(false)}
+                  className={({ isActive }) => `
+                    flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200
+                    ${
+                      isActive
+                        ? "bg-red-50 text-red-600 border border-red-100"
+                        : "text-slate-500 hover:bg-red-50 hover:text-red-600"
+                    }
+                  `}
+                >
+                  {item.icon}
+                  <span className="font-medium text-sm">{item.label}</span>
+                </NavLink>
+              ))}
+            </nav>
+          </div>
+        )}
       </div>
 
       {/* Profil Section */}
-      <div className="px-4">
+      <div className="px-4 mt-auto">
         <div className="pt-4 border-t border-slate-100">
           {isLoggedIn ? (
             <div className="space-y-1">
@@ -136,9 +182,16 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
                   <p className="text-sm font-bold text-slate-800 truncate">
                     {userData.name}
                   </p>
-                  <p className="text-[10px] text-slate-400 truncate">
-                    {userData.email}
-                  </p>
+                  <div className="flex items-center gap-1">
+                    <p className="text-[10px] text-slate-400 truncate">
+                      {userData.email}
+                    </p>
+                    {userData.role === "admin" && (
+                      <span className="text-[8px] bg-red-100 text-red-600 px-1 rounded font-bold uppercase">
+                        Admin
+                      </span>
+                    )}
+                  </div>
                 </div>
               </div>
               <button

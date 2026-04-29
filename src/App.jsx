@@ -6,6 +6,7 @@ import Register from "./pages/Register";
 import Bookmarks from "./pages/Bookmarks";
 import VerifyStatus from "./pages/VerifyStatus";
 import BankSoal from "./pages/BankSoal";
+import HierarchyManagement from "./pages/admin/HierarchyManagement";
 
 function App() {
   return (
@@ -18,6 +19,8 @@ function App() {
         <Route path="/ujian" element={<div>Soon</div>} />
         <Route path="/bookmarks" element={<Bookmarks />} />
         <Route path="/verify" element={<VerifyStatus />} />
+
+        <Route path="/admin/hierarchy" element={<HierarchyManagement />} />
       </Route>
     </Routes>
   );

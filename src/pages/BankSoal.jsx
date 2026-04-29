@@ -31,6 +31,8 @@ const BankSoal = () => {
     const lastSlug = pathSegments[pathSegments.length - 1] || "";
 
     try {
+      // Kita panggil tanpa parameter role agar backend otomatis
+      // menjalankan filter is_published = 1 (default user logic)
       const response = await fetch(
         `https://gudangsoal.com/api/categories.php?action=get_categories&slug=${lastSlug}`
       );

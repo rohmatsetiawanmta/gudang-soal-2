@@ -9,6 +9,10 @@ import {
   Trash2,
   Edit3,
   X,
+  Eye,
+  EyeOff,
+  Globe,
+  Lock,
 } from "lucide-react";
 import toast from "react-hot-toast";
 
@@ -108,6 +112,46 @@ const HierarchyManagement = () => {
       setPath(newPath);
       setFormData({ ...formData, parent_id: lastItem.id });
       fetchCategories(lastItem.id);
+    }
+  };
+
+  const togglePublished = async (cat) => {
+    const newStatus = cat.is_published == 1 ? 0 : 1;
+
+    // Optimistic Update: Update UI dulu supaya terasa instan
+    const updatedCategories = categories.map((item) =>
+      item.id === cat.id ? { ...item, is_published: newStatus } : item
+    );
+    setCategories(updatedCategories);
+
+    try {
+      const response = await fetch(
+        "https://gudangsoal.com/api/categories.php?action=update_category",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            id: cat.id,
+            name: cat.name,
+            type: cat.type,
+            is_published: newStatus,
+          }),
+        }
+      );
+
+      const result = await response.json();
+      if (result.status !== "success") {
+        // Jika gagal, balikin ke status semula
+        fetchCategories(formData.parent_id);
+        toast.error("Gagal memperbarui status");
+      } else {
+        toast.success(
+          `${cat.name} ${newStatus ? "dipublikasikan" : "disembunyikan"}`
+        );
+      }
+    } catch (error) {
+      fetchCategories(formData.parent_id);
+      toast.error("Terjadi kesalahan jaringan");
     }
   };
 
@@ -225,92 +269,150 @@ const HierarchyManagement = () => {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-50">
-                  {categories.map((cat) => (
-                    <tr
-                      key={cat.id}
-                      className="hover:bg-slate-50/50 transition-colors"
-                    >
-                      <td className="px-6 py-4">
-                        {editingItem?.id === cat.id ? (
-                          <input
-                            type="text"
-                            className="w-full px-3 py-1.5 bg-white border border-blue-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-blue-500"
-                            value={editingItem.name}
-                            onChange={(e) =>
-                              setEditingItem({
-                                ...editingItem,
-                                name: e.target.value,
-                              })
-                            }
-                          />
-                        ) : (
-                          <span className="font-bold text-slate-700">
-                            {cat.name}
-                          </span>
-                        )}
-                      </td>
-                      <td className="px-6 py-4">
-                        {editingItem?.id === cat.id ? (
-                          <select
-                            className="px-2 py-1.5 bg-white border border-blue-200 rounded-lg text-[10px] font-bold uppercase outline-none"
-                            value={editingItem.type}
-                            onChange={(e) =>
-                              setEditingItem({
-                                ...editingItem,
-                                type: e.target.value,
-                              })
-                            }
-                          >
-                            <option value="type">Type</option>
-                            <option value="level">Level</option>
-                            <option value="class_series">Class/Series</option>
-                            <option value="subject">Subject</option>
-                            <option value="topic">Topic</option>
-                            <option value="subtopic">Subtopic</option>
-                          </select>
-                        ) : (
-                          <span className="px-2 py-1 bg-slate-100 text-[10px] font-bold rounded-md text-slate-500 uppercase">
-                            {cat.type}
-                          </span>
-                        )}
-                      </td>
-                      <td className="px-6 py-4 text-right">
-                        <div className="flex justify-end gap-2">
+                  {categories.length > 0 ? (
+                    categories.map((cat) => (
+                      <tr
+                        key={cat.id}
+                        className="hover:bg-slate-50/50 transition-colors"
+                      >
+                        {/* KOLOM NAMA */}
+                        <td className="px-6 py-4">
                           {editingItem?.id === cat.id ? (
-                            <>
-                              <button
-                                onClick={() => handleUpdate(cat.id)}
-                                className="p-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors"
-                              >
-                                <Save size={18} />
-                              </button>
-                              <button
-                                onClick={() => setEditingItem(null)}
-                                className="p-2 text-slate-400 hover:bg-slate-50 rounded-lg transition-colors"
-                              >
-                                <X size={18} />
-                              </button>
-                            </>
+                            <input
+                              type="text"
+                              className="w-full px-3 py-1.5 bg-white border border-blue-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-blue-500"
+                              value={editingItem.name}
+                              onChange={(e) =>
+                                setEditingItem({
+                                  ...editingItem,
+                                  name: e.target.value,
+                                })
+                              }
+                            />
                           ) : (
-                            <>
-                              <button
-                                onClick={() => setEditingItem(cat)}
-                                className="p-2 text-slate-400 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition-colors"
-                              >
-                                <Edit3 size={18} />
-                              </button>
-                              <button
-                                onClick={() => enterCategory(cat)}
-                                className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                              >
-                                <FolderTree size={18} />
-                              </button>
-                            </>
+                            <span className="font-bold text-slate-700">
+                              {cat.name}
+                            </span>
                           )}
-                        </div>
+                        </td>
+
+                        {/* KOLOM TIPE */}
+                        <td className="px-6 py-4">
+                          {editingItem?.id === cat.id ? (
+                            <select
+                              className="px-2 py-1.5 bg-white border border-blue-200 rounded-lg text-[10px] font-bold uppercase outline-none"
+                              value={editingItem.type}
+                              onChange={(e) =>
+                                setEditingItem({
+                                  ...editingItem,
+                                  type: e.target.value,
+                                })
+                              }
+                            >
+                              <option value="type">Type</option>
+                              <option value="level">Level</option>
+                              <option value="class_series">Class/Series</option>
+                              <option value="subject">Subject</option>
+                              <option value="topic">Topic</option>
+                              <option value="subtopic">Subtopic</option>
+                            </select>
+                          ) : (
+                            <span className="px-2 py-1 bg-slate-100 text-[10px] font-bold rounded-md text-slate-500 uppercase">
+                              {cat.type}
+                            </span>
+                          )}
+                        </td>
+
+                        {/* KOLOM STATUS PUBLISH (TOGGLE SAKELAR) */}
+                        <td className="px-6 py-4">
+                          <div className="flex items-center gap-3">
+                            <button
+                              onClick={() => togglePublished(cat)}
+                              disabled={loading}
+                              className={`relative inline-flex h-5 w-10 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
+                                cat.is_published == 1
+                                  ? "bg-blue-600"
+                                  : "bg-slate-200"
+                              }`}
+                            >
+                              <span
+                                className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
+                                  cat.is_published == 1
+                                    ? "translate-x-5"
+                                    : "translate-x-0"
+                                }`}
+                              />
+                            </button>
+                            <span
+                              className={`text-[10px] font-bold uppercase tracking-wider ${
+                                cat.is_published == 1
+                                  ? "text-blue-600"
+                                  : "text-slate-400"
+                              }`}
+                            >
+                              {cat.is_published == 1 ? "Public" : "Draft"}
+                            </span>
+                          </div>
+                        </td>
+
+                        {/* KOLOM AKSI */}
+                        <td className="px-6 py-4 text-right">
+                          <div className="flex justify-end gap-2">
+                            {editingItem?.id === cat.id ? (
+                              <>
+                                <button
+                                  onClick={() => handleUpdate(cat.id)}
+                                  className="p-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors"
+                                  title="Simpan"
+                                >
+                                  <Save size={18} />
+                                </button>
+                                <button
+                                  onClick={() => setEditingItem(null)}
+                                  className="p-2 text-slate-400 hover:bg-slate-50 rounded-lg transition-colors"
+                                  title="Batal"
+                                >
+                                  <X size={18} />
+                                </button>
+                              </>
+                            ) : (
+                              <>
+                                <button
+                                  onClick={() => setEditingItem(cat)}
+                                  className="p-2 text-slate-400 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition-colors"
+                                  title="Edit Info"
+                                >
+                                  <Edit3 size={18} />
+                                </button>
+                                <button
+                                  onClick={() => enterCategory(cat)}
+                                  className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                                  title="Masuk Level"
+                                >
+                                  <FolderTree size={18} />
+                                </button>
+                                <button
+                                  className="p-2 text-red-400 hover:bg-red-50 rounded-lg transition-colors"
+                                  title="Hapus"
+                                >
+                                  <Trash2 size={18} />
+                                </button>
+                              </>
+                            )}
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td
+                        colSpan="4"
+                        className="px-6 py-10 text-center text-slate-400 italic"
+                      >
+                        Belum ada sub-kategori di level ini.
                       </td>
                     </tr>
-                  ))}
+                  )}
                 </tbody>
               </table>
             )}

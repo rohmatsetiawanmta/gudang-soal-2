@@ -7,6 +7,7 @@ import Bookmarks from "./pages/Bookmarks";
 import VerifyStatus from "./pages/VerifyStatus";
 import BankSoal from "./pages/BankSoal";
 import HierarchyManagement from "./pages/admin/HierarchyManagement";
+import QuestionManagement from "./pages/admin/QuestionManagement";
 
 function App() {
   return (
@@ -21,6 +22,10 @@ function App() {
         <Route path="/verify" element={<VerifyStatus />} />
 
         <Route path="/admin/hierarchy" element={<HierarchyManagement />} />
+        <Route
+          path="/admin/questions/:categoryId"
+          element={<QuestionManagement />}
+        />
       </Route>
     </Routes>
   );

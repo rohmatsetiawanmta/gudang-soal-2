@@ -10,6 +10,7 @@ import {
   X,
   ShieldCheck,
   GitBranchPlus,
+  FileEdit, // Import ikon tambahan untuk manajemen soal
 } from "lucide-react";
 import toast from "react-hot-toast";
 
@@ -145,6 +146,11 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
                   icon: <GitBranchPlus size={18} />,
                   label: "Hierarchy Management",
                   path: "/admin/hierarchy",
+                },
+                {
+                  icon: <FileEdit size={18} />,
+                  label: "Question Bank Admin",
+                  path: "/admin/questions",
                 },
               ].map((item) => (
                 <NavLink

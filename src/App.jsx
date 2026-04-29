@@ -22,6 +22,7 @@ function App() {
         <Route path="/verify" element={<VerifyStatus />} />
 
         <Route path="/admin/hierarchy" element={<HierarchyManagement />} />
+        <Route path="/admin/questions" element={<QuestionManagement />} />
         <Route
           path="/admin/questions/:categoryId"
           element={<QuestionManagement />}

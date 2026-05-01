@@ -29,6 +29,7 @@ const QuestionManagement = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingQuestion, setEditingQuestion] = useState(null);
   const [categoryDetail, setCategoryDetail] = useState(null);
+  const [imageLibrary, setImageLibrary] = useState([]); // State untuk menampung pustaka gambar[cite: 5]
 
   const [formData, setFormData] = useState({
     question_type: "multiple_choice",
@@ -40,19 +41,50 @@ const QuestionManagement = () => {
     is_published: 0,
   });
 
-  /**
-   * Helper: Render LaTeX and Basic HTML
-   * Menggunakan font-normal dan text-sm untuk konsistensi pratinjau.
-   */
-  const renderTextWithMath = (text) => {
+  const renderContent = (text) => {
     if (!text) return "";
-    const parts = text.split(/(\$\$.*?\$\$|\$.*?\$)/g);
+
+    // Regex diperbarui untuk mendeteksi opsional parameter ukuran
+    // Contoh: [IMG-XXXXXXXX] atau [IMG-XXXXXXXX|300]
+    const parts = text.split(
+      /(\$\$.*?\$\$|\$.*?\$|\[IMG-[A-Z0-9]{8}(?:\|\d+)?\])/g
+    );
+
     return parts.map((part, i) => {
       if (part.startsWith("$$") && part.endsWith("$$")) {
         return <BlockMath key={i} math={part.slice(2, -2)} />;
-      } else if (part.startsWith("$") && part.endsWith("$")) {
+      }
+
+      if (part.startsWith("$") && part.endsWith("$")) {
         return <InlineMath key={i} math={part.slice(1, -1)} />;
       }
+
+      // Logika baru untuk handle Image dengan Size
+      const imgMatch = part.match(/\[IMG-([A-Z0-9]{8})(?:\|(\d+))?\]/);
+      if (imgMatch) {
+        const slug = `IMG-${imgMatch[1]}`;
+        const size = imgMatch[2]; // Mengambil angka setelah pipa (|)
+        const imageData = imageLibrary.find((img) => img.slug === slug);
+
+        return imageData ? (
+          <div key={i} className="flex justify-center group relative">
+            <img
+              src={imageData.url}
+              alt={slug}
+              style={{ width: size ? `${size}px` : "auto", maxWidth: "100%" }} // Atur lebar dinamis[cite: 5]
+              className="h-auto rounded-xl p-2 bg-white"
+            />
+          </div>
+        ) : (
+          <span
+            key={i}
+            className="text-red-400 font-mono text-[10px] block my-2 p-2 border border-dashed border-red-200 rounded-lg text-center"
+          >
+            [Aset {slug} tidak ditemukan]
+          </span>
+        );
+      }
+
       return (
         <span
           key={i}
@@ -61,6 +93,20 @@ const QuestionManagement = () => {
         />
       );
     });
+  };
+
+  const fetchImageLibrary = async () => {
+    try {
+      const response = await fetch(
+        "https://gudangsoal.com/api/images.php?action=get_images"
+      );
+      const result = await response.json();
+      if (result.status === "success") {
+        setImageLibrary(result.data);
+      }
+    } catch (error) {
+      console.error("Gagal mengambil pustaka gambar");
+    }
   };
 
   const fetchCategoryDetail = async () => {
@@ -105,6 +151,7 @@ const QuestionManagement = () => {
   useEffect(() => {
     fetchQuestions();
     fetchCategoryDetail();
+    fetchImageLibrary(); // Memuat pustaka gambar saat komponen dimuat[cite: 5]
   }, [categoryId]);
 
   const handleSubmit = async (e) => {
@@ -172,7 +219,7 @@ const QuestionManagement = () => {
 
   return (
     <div className="h-[calc(100vh-140px)] flex flex-col gap-4 overflow-hidden">
-      {/* HEADER DINAMIS */}
+      {/* HEADER DINAMIS[cite: 5] */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           {categoryId && (
@@ -202,7 +249,7 @@ const QuestionManagement = () => {
                   <span className="text-blue-600">{categoryDetail?.name}</span>
                 </>
               ) : (
-                <span className="text-slate-300 italic italic">
+                <span className="text-slate-300 italic">
                   Global view of all registered questions
                 </span>
               )}
@@ -220,7 +267,7 @@ const QuestionManagement = () => {
       </div>
 
       <div className="flex-1 flex gap-4 overflow-hidden">
-        {/* PANEL KIRI: LIST SOAL */}
+        {/* PANEL KIRI: LIST SOAL[cite: 5] */}
         <div className="w-64 bg-white rounded-[24px] border border-slate-100 flex flex-col overflow-hidden shrink-0 shadow-sm">
           <div className="p-3 border-b border-slate-50 bg-slate-50/30 flex items-center gap-2">
             <Search size={12} className="text-slate-400" />
@@ -276,34 +323,10 @@ const QuestionManagement = () => {
           </div>
         </div>
 
-        {/* PANEL KANAN: PRATINJAU DETAIL */}
+        {/* PANEL KANAN: PRATINJAU DETAIL[cite: 5] */}
         <div className="flex-1 bg-white rounded-[24px] border border-slate-100 shadow-sm overflow-y-auto no-scrollbar relative bg-gradient-to-b from-white to-slate-50/30">
           {selectedQuestion ? (
             <div className="max-w-2xl mx-auto py-10 px-6 space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-500">
-              {/* Shortcut Kategori di Mode Global */}
-              {!categoryId && (
-                <div className="bg-blue-50/50 p-4 rounded-2xl border border-blue-100 flex items-center justify-between">
-                  <div className="flex flex-col gap-0.5">
-                    <span className="text-[8px] font-black text-blue-400 uppercase tracking-widest">
-                      Linked Category
-                    </span>
-                    <span className="text-[11px] font-bold text-blue-900 uppercase">
-                      Contextual Repository View
-                    </span>
-                  </div>
-                  <button
-                    onClick={() =>
-                      navigate(
-                        `/admin/questions/${selectedQuestion.category_id}`
-                      )
-                    }
-                    className="flex items-center gap-2 bg-white text-blue-600 px-3 py-2 rounded-xl text-[9px] font-black border border-blue-200 hover:bg-blue-600 hover:text-white transition-all shadow-sm"
-                  >
-                    <ExternalLink size={10} /> MANAGE CATEGORY
-                  </button>
-                </div>
-              )}
-
               <div className="flex justify-between items-center pb-6 border-b border-slate-100">
                 <div className="flex flex-col gap-0.5">
                   <span className="text-[8px] font-black text-slate-300 uppercase tracking-[0.2em]">
@@ -349,7 +372,7 @@ const QuestionManagement = () => {
                   Question
                 </h4>
                 <div className="text-sm font-normal text-slate-800 leading-relaxed px-1">
-                  {renderTextWithMath(selectedQuestion.question_text)}
+                  {renderContent(selectedQuestion.question_text)}
                 </div>
               </div>
 
@@ -388,9 +411,7 @@ const QuestionManagement = () => {
                               {key}
                             </span>
                             <span className="text-sm font-normal text-slate-800">
-                              {renderTextWithMath(
-                                selectedQuestion.options[key]
-                              )}
+                              {renderContent(selectedQuestion.options[key])}
                             </span>
                           </div>
                         )
@@ -406,7 +427,7 @@ const QuestionManagement = () => {
                       Explanation
                     </h4>
                     <div className="text-sm leading-relaxed font-normal text-slate-200">
-                      {renderTextWithMath(selectedQuestion.explanation)}
+                      {renderContent(selectedQuestion.explanation)}
                     </div>
                   </div>
                 </div>
@@ -420,7 +441,7 @@ const QuestionManagement = () => {
         </div>
       </div>
 
-      {/* MODAL FORM */}
+      {/* MODAL FORM[cite: 5] */}
       {isModalOpen && (
         <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
           <div className="bg-white w-full max-w-xl rounded-[24px] shadow-2xl flex flex-col max-h-[90vh] overflow-hidden animate-in zoom-in-95 duration-200">
@@ -459,7 +480,7 @@ const QuestionManagement = () => {
               </div>
               <div className="space-y-1.5">
                 <label className="text-[8px] font-black text-slate-300 uppercase tracking-widest ml-1">
-                  Body (Supports <b>Bold</b> & $LaTeX$)
+                  Body (Supports <b>Bold</b>, $LaTeX$, & [IMG-XXXXXXXX])
                 </label>
                 <textarea
                   className="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl min-h-[80px] outline-none font-bold text-xs focus:border-blue-500 transition-all"

@@ -173,17 +173,19 @@ const QuestionManagement = () => {
   return (
     <div className="h-[calc(100vh-140px)] flex flex-col gap-4 overflow-hidden">
       {/* HEADER DINAMIS */}
-      <div className="flex items-center justify-between bg-white p-5 rounded-[24px] border border-slate-100 shadow-sm shrink-0">
+      <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <button
-            onClick={() => navigate(-1)}
-            className="p-2.5 bg-slate-50 text-slate-400 hover:text-red-500 rounded-xl transition-all"
-          >
-            <ChevronLeft size={20} />
-          </button>
+          {categoryId && (
+            <button
+              onClick={() => navigate(-1)}
+              className="p-2.5 bg-slate-50 text-slate-400 hover:text-red-500 rounded-xl transition-all"
+            >
+              <ChevronLeft size={20} />
+            </button>
+          )}
           <div>
-            <h2 className="text-xl font-bold text-slate-800 flex items-center gap-2">
-              <FileText size={20} className="text-red-500" />
+            <h2 className="text-2xl font-bold text-slate-800 flex items-center gap-2">
+              <FileText className="text-red-500" />
               {categoryId
                 ? categoryDetail?.name || "Loading..."
                 : "All Repositories"}
@@ -197,7 +199,7 @@ const QuestionManagement = () => {
                       <ChevronRight size={10} className="text-slate-400" />
                     </span>
                   ))}
-                  <span className="text-blue-600">{categoryDetail.name}</span>
+                  <span className="text-blue-600">{categoryDetail?.name}</span>
                 </>
               ) : (
                 <span className="text-slate-300 italic italic">

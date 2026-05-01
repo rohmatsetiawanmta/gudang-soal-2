@@ -253,7 +253,8 @@ const BankSoal = () => {
                   {questions.map((q, idx) => (
                     <div
                       key={q.id}
-                      className="bg-white border border-slate-100 rounded-[24px] p-6 shadow-sm hover:shadow-md transition-all"
+                      onClick={() => navigate(`/soal/${q.question_code}`)}
+                      className="bg-white border border-slate-100 rounded-[24px] p-6 shadow-sm hover:shadow-md transition-all cursor-pointer group"
                     >
                       <div className="flex items-center gap-3 mb-4">
                         <span className="w-8 h-8 bg-blue-50 text-blue-600 rounded-lg flex items-center justify-center text-xs font-black">

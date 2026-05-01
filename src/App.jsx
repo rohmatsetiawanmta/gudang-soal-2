@@ -9,6 +9,7 @@ import BankSoal from "./pages/BankSoal";
 import HierarchyManagement from "./pages/admin/HierarchyManagement";
 import QuestionManagement from "./pages/admin/QuestionManagement";
 import ImageManagement from "./pages/admin/ImageManagement";
+import DetailSoal from "./pages/DetailSoal";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/bank-soal/*" element={<BankSoal />} />
+        <Route path="soal/:questionCode" element={<DetailSoal />} />
         <Route path="/ujian" element={<div>Soon</div>} />
         <Route path="/bookmarks" element={<Bookmarks />} />
         <Route path="/verify" element={<VerifyStatus />} />

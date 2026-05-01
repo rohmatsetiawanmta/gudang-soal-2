@@ -194,10 +194,10 @@ const QuestionManagement = () => {
                   {categoryDetail?.path?.map((step, idx) => (
                     <span key={idx} className="flex items-center gap-1.5">
                       {step}{" "}
-                      <ChevronRight size={10} className="text-slate-200" />
+                      <ChevronRight size={10} className="text-slate-400" />
                     </span>
                   ))}
-                  <span className="text-blue-600">Inventory</span>
+                  <span className="text-blue-600">{categoryDetail.name}</span>
                 </>
               ) : (
                 <span className="text-slate-300 italic italic">
@@ -305,7 +305,7 @@ const QuestionManagement = () => {
               <div className="flex justify-between items-center pb-6 border-b border-slate-100">
                 <div className="flex flex-col gap-0.5">
                   <span className="text-[8px] font-black text-slate-300 uppercase tracking-[0.2em]">
-                    Metadata
+                    Question Id
                   </span>
                   <div className="flex items-center gap-2">
                     <span className="text-sm font-black text-slate-800 tracking-tight">
@@ -344,7 +344,7 @@ const QuestionManagement = () => {
 
               <div className="space-y-4">
                 <h4 className="text-[9px] font-black text-slate-300 uppercase tracking-[0.3em]">
-                  Question Body
+                  Question
                 </h4>
                 <div className="text-sm font-normal text-slate-800 leading-relaxed px-1">
                   {renderTextWithMath(selectedQuestion.question_text)}
@@ -353,13 +353,10 @@ const QuestionManagement = () => {
 
               <div className="space-y-4 pt-2">
                 <h4 className="text-[9px] font-black text-slate-300 uppercase tracking-[0.3em]">
-                  Validation Key
+                  Answer
                 </h4>
                 {selectedQuestion.question_type === "short_answer" ? (
                   <div className="p-5 bg-white border border-green-100 rounded-[20px] shadow-sm flex flex-col gap-1">
-                    <span className="text-[8px] font-black text-green-600 uppercase tracking-widest">
-                      Exact Teks
-                    </span>
                     <span className="text-sm font-normal text-slate-800 tracking-tight">
                       {selectedQuestion.correct_answer}
                     </span>
@@ -404,7 +401,7 @@ const QuestionManagement = () => {
                 <div className="pt-6">
                   <div className="bg-slate-900 rounded-[24px] p-6 text-white shadow-xl shadow-slate-200 relative overflow-hidden">
                     <h4 className="text-[8px] font-black text-white/40 uppercase tracking-[0.3em] mb-3">
-                      Analysis Resolution
+                      Explanation
                     </h4>
                     <div className="text-sm leading-relaxed font-normal text-slate-200">
                       {renderTextWithMath(selectedQuestion.explanation)}

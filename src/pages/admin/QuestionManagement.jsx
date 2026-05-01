@@ -15,6 +15,8 @@ import {
   Database,
   ChevronRight,
   ExternalLink,
+  Eye,
+  EyeOff,
 } from "lucide-react";
 import toast from "react-hot-toast";
 import "katex/dist/katex.min.css";
@@ -29,7 +31,7 @@ const QuestionManagement = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingQuestion, setEditingQuestion] = useState(null);
   const [categoryDetail, setCategoryDetail] = useState(null);
-  const [imageLibrary, setImageLibrary] = useState([]); // State untuk menampung pustaka gambar[cite: 5]
+  const [imageLibrary, setImageLibrary] = useState([]);
 
   const [formData, setFormData] = useState({
     question_type: "multiple_choice",
@@ -43,9 +45,6 @@ const QuestionManagement = () => {
 
   const renderContent = (text) => {
     if (!text) return "";
-
-    // Regex diperbarui untuk mendeteksi opsional parameter ukuran
-    // Contoh: [IMG-XXXXXXXX] atau [IMG-XXXXXXXX|300]
     const parts = text.split(
       /(\$\$.*?\$\$|\$.*?\$|\[IMG-[A-Z0-9]{8}(?:\|\d+)?\])/g
     );
@@ -54,24 +53,20 @@ const QuestionManagement = () => {
       if (part.startsWith("$$") && part.endsWith("$$")) {
         return <BlockMath key={i} math={part.slice(2, -2)} />;
       }
-
       if (part.startsWith("$") && part.endsWith("$")) {
         return <InlineMath key={i} math={part.slice(1, -1)} />;
       }
-
-      // Logika baru untuk handle Image dengan Size
       const imgMatch = part.match(/\[IMG-([A-Z0-9]{8})(?:\|(\d+))?\]/);
       if (imgMatch) {
         const slug = `IMG-${imgMatch[1]}`;
-        const size = imgMatch[2]; // Mengambil angka setelah pipa (|)
+        const size = imgMatch[2];
         const imageData = imageLibrary.find((img) => img.slug === slug);
-
         return imageData ? (
           <div key={i} className="flex justify-center group relative">
             <img
               src={imageData.url}
               alt={slug}
-              style={{ width: size ? `${size}px` : "auto", maxWidth: "100%" }} // Atur lebar dinamis[cite: 5]
+              style={{ width: size ? `${size}px` : "auto", maxWidth: "100%" }}
               className="h-auto rounded-xl p-2 bg-white"
             />
           </div>
@@ -84,7 +79,6 @@ const QuestionManagement = () => {
           </span>
         );
       }
-
       return (
         <span
           key={i}
@@ -101,9 +95,7 @@ const QuestionManagement = () => {
         "https://gudangsoal.com/api/images.php?action=get_images"
       );
       const result = await response.json();
-      if (result.status === "success") {
-        setImageLibrary(result.data);
-      }
+      if (result.status === "success") setImageLibrary(result.data);
     } catch (error) {
       console.error("Gagal mengambil pustaka gambar");
     }
@@ -119,9 +111,7 @@ const QuestionManagement = () => {
         `https://gudangsoal.com/api/categories.php?action=get_category_path&id=${categoryId}`
       );
       const result = await response.json();
-      if (result.status === "success") {
-        setCategoryDetail(result.data);
-      }
+      if (result.status === "success") setCategoryDetail(result.data);
     } catch (error) {
       console.error("Gagal mengambil detail kategori");
     }
@@ -151,7 +141,7 @@ const QuestionManagement = () => {
   useEffect(() => {
     fetchQuestions();
     fetchCategoryDetail();
-    fetchImageLibrary(); // Memuat pustaka gambar saat komponen dimuat[cite: 5]
+    fetchImageLibrary();
   }, [categoryId]);
 
   const handleSubmit = async (e) => {
@@ -219,7 +209,6 @@ const QuestionManagement = () => {
 
   return (
     <div className="h-[calc(100vh-140px)] flex flex-col gap-4 overflow-hidden">
-      {/* HEADER DINAMIS[cite: 5] */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           {categoryId && (
@@ -267,7 +256,7 @@ const QuestionManagement = () => {
       </div>
 
       <div className="flex-1 flex gap-4 overflow-hidden">
-        {/* PANEL KIRI: LIST SOAL[cite: 5] */}
+        {/* PANEL KIRI: LIST SOAL DENGAN PENANDA VISUAL */}
         <div className="w-64 bg-white rounded-[24px] border border-slate-100 flex flex-col overflow-hidden shrink-0 shadow-sm">
           <div className="p-3 border-b border-slate-50 bg-slate-50/30 flex items-center gap-2">
             <Search size={12} className="text-slate-400" />
@@ -283,14 +272,14 @@ const QuestionManagement = () => {
                 <button
                   key={q.id}
                   onClick={() => setSelectedQuestion(q)}
-                  className={`w-full flex items-center gap-3 p-2 rounded-xl transition-all border ${
+                  className={`w-full flex items-start gap-3 p-2.5 rounded-xl transition-all border ${
                     selectedQuestion?.id === q.id
                       ? "bg-slate-900 border-slate-900 text-white shadow-md shadow-slate-100"
                       : "bg-white border-transparent text-slate-500 hover:bg-slate-50"
                   }`}
                 >
                   <div
-                    className={`w-6 h-6 rounded-lg flex items-center justify-center font-black text-[9px] shrink-0 ${
+                    className={`w-6 h-6 rounded-lg flex items-center justify-center font-black text-[9px] shrink-0 mt-0.5 ${
                       selectedQuestion?.id === q.id
                         ? "bg-white/20 text-white"
                         : "bg-slate-100 text-slate-400"
@@ -298,20 +287,56 @@ const QuestionManagement = () => {
                   >
                     {idx + 1}
                   </div>
-                  <div className="flex flex-col items-start min-w-0">
-                    <span
-                      className={`text-[9px] font-black tracking-widest uppercase ${
-                        selectedQuestion?.id === q.id
-                          ? "text-blue-400"
-                          : "text-blue-600"
-                      }`}
-                    >
-                      #{q.question_code}
-                    </span>
-                    <span className="text-[8px] font-bold uppercase truncate w-32 text-left opacity-60">
-                      {q.question_type === "short_answer" ? "SHORT" : "MCQ"} •{" "}
-                      {q.difficulty}
-                    </span>
+                  <div className="flex flex-col items-start min-w-0 gap-1">
+                    <div className="flex items-center gap-2">
+                      <span
+                        className={`text-[9px] font-black tracking-widest uppercase ${
+                          selectedQuestion?.id === q.id
+                            ? "text-blue-400"
+                            : "text-blue-600"
+                        }`}
+                      >
+                        #{q.question_code}
+                      </span>
+                      {/* STATUS PENANDA PUBLIKASI */}
+                      {q.is_published == 1 ? (
+                        <Eye
+                          size={10}
+                          className={
+                            selectedQuestion?.id === q.id
+                              ? "text-green-400"
+                              : "text-green-500"
+                          }
+                        />
+                      ) : (
+                        <EyeOff
+                          size={10}
+                          className={
+                            selectedQuestion?.id === q.id
+                              ? "text-white/40"
+                              : "text-slate-300"
+                          }
+                        />
+                      )}
+                    </div>
+                    <div className="flex flex-wrap items-center gap-1.5">
+                      <span className="text-[8px] font-bold uppercase opacity-60">
+                        {q.question_type === "short_answer" ? "SHORT" : "MCQ"}
+                      </span>
+                      <span className="text-[10px] opacity-40">•</span>
+                      {/* PENANDA DIFFICULTY DENGAN WARNA */}
+                      <span
+                        className={`text-[8px] font-black uppercase tracking-wider ${
+                          q.difficulty === "hard"
+                            ? "text-red-400"
+                            : q.difficulty === "medium"
+                            ? "text-orange-400"
+                            : "text-green-400"
+                        }`}
+                      >
+                        {q.difficulty}
+                      </span>
+                    </div>
                   </div>
                 </button>
               ))
@@ -323,7 +348,7 @@ const QuestionManagement = () => {
           </div>
         </div>
 
-        {/* PANEL KANAN: PRATINJAU DETAIL[cite: 5] */}
+        {/* PANEL KANAN: PRATINJAU DETAIL */}
         <div className="flex-1 bg-white rounded-[24px] border border-slate-100 shadow-sm overflow-y-auto no-scrollbar relative bg-gradient-to-b from-white to-slate-50/30">
           {selectedQuestion ? (
             <div className="max-w-2xl mx-auto py-10 px-6 space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-500">
@@ -340,10 +365,24 @@ const QuestionManagement = () => {
                       className={`text-[8px] font-black px-2 py-0.5 rounded-md border uppercase tracking-widest ${
                         selectedQuestion.difficulty === "hard"
                           ? "bg-red-50 text-red-600 border-red-100"
+                          : selectedQuestion.difficulty === "medium"
+                          ? "bg-orange-50 text-orange-600 border-orange-100"
                           : "bg-green-50 text-green-600 border-green-100"
                       }`}
                     >
                       {selectedQuestion.difficulty}
+                    </span>
+                    {/* LABEL STATUS DI DETAIL VIEW */}
+                    <span
+                      className={`text-[8px] font-black px-2 py-0.5 rounded-md border uppercase tracking-widest ${
+                        selectedQuestion.is_published == 1
+                          ? "bg-green-50 text-green-600 border-green-100"
+                          : "bg-slate-50 text-slate-400 border-slate-100"
+                      }`}
+                    >
+                      {selectedQuestion.is_published == 1
+                        ? "Publish"
+                        : "Not Publish"}
                     </span>
                   </div>
                 </div>
@@ -441,7 +480,7 @@ const QuestionManagement = () => {
         </div>
       </div>
 
-      {/* MODAL FORM[cite: 5] */}
+      {/* MODAL FORM */}
       {isModalOpen && (
         <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
           <div className="bg-white w-full max-w-xl rounded-[24px] shadow-2xl flex flex-col max-h-[90vh] overflow-hidden animate-in zoom-in-95 duration-200">
@@ -562,6 +601,7 @@ const QuestionManagement = () => {
                   <option value="medium">Medium</option>
                   <option value="hard">Hard</option>
                 </select>
+                {/* OPSI PUBLIKASI PUBLISH & NOT PUBLISH[cite: 7] */}
                 <select
                   className="w-full p-3 bg-slate-50 border border-slate-100 rounded-xl font-black text-[9px] uppercase tracking-widest outline-none cursor-pointer"
                   value={formData.is_published}
@@ -569,8 +609,8 @@ const QuestionManagement = () => {
                     setFormData({ ...formData, is_published: e.target.value })
                   }
                 >
-                  <option value={0}>Draft</option>
-                  <option value={1}>Public</option>
+                  <option value={1}>Publish</option>
+                  <option value={0}>Not Publish</option>
                 </select>
               </div>
               <textarea

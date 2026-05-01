@@ -8,6 +8,7 @@ import VerifyStatus from "./pages/VerifyStatus";
 import BankSoal from "./pages/BankSoal";
 import HierarchyManagement from "./pages/admin/HierarchyManagement";
 import QuestionManagement from "./pages/admin/QuestionManagement";
+import ImageManagement from "./pages/admin/ImageManagement";
 
 function App() {
   return (
@@ -20,13 +21,13 @@ function App() {
         <Route path="/ujian" element={<div>Soon</div>} />
         <Route path="/bookmarks" element={<Bookmarks />} />
         <Route path="/verify" element={<VerifyStatus />} />
-
         <Route path="/admin/hierarchy" element={<HierarchyManagement />} />
         <Route path="/admin/questions" element={<QuestionManagement />} />
         <Route
           path="/admin/questions/:categoryId"
           element={<QuestionManagement />}
         />
+        <Route path="admin/images" element={<ImageManagement />} />
       </Route>
     </Routes>
   );

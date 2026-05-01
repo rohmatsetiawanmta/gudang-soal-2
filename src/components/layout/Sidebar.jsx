@@ -10,7 +10,8 @@ import {
   X,
   ShieldCheck,
   GitBranchPlus,
-  FileEdit, // Import ikon tambahan untuk manajemen soal
+  FileEdit,
+  Image, // Ikon untuk Image Management
 } from "lucide-react";
 import toast from "react-hot-toast";
 
@@ -20,7 +21,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
   const userData = JSON.parse(localStorage.getItem("userData")) || {
     name: "User",
     email: "user@example.com",
-    role: "user", // Default role
+    role: "user",
   };
 
   const handleLogout = () => {
@@ -131,7 +132,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
           </nav>
         </div>
 
-        {/* Admin Navigation - Hanya muncul jika role === 'admin' */}
+        {/* Admin Navigation */}
         {userData.role === "admin" && (
           <div className="px-6 mt-8">
             <div className="flex items-center gap-2 mb-4">
@@ -151,6 +152,11 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
                   icon: <FileEdit size={18} />,
                   label: "Question Bank Admin",
                   path: "/admin/questions",
+                },
+                {
+                  icon: <Image size={18} />, // Menu Baru
+                  label: "Image Management",
+                  path: "/admin/images",
                 },
               ].map((item) => (
                 <NavLink
